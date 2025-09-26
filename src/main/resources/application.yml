@@ -1,0 +1,8 @@
+server:
+  port: 8088
+
+app:
+  out-dir: ./run-results        # nơi sinh ảnh/log
+  viewport:
+    width: 1280
+    height: 800

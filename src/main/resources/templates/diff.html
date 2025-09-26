@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UI Diff Tool</title>
+</head>
+<body>
+<h2>Phát hiện thay đổi UI</h2>
+<form method="post" action="/diff" enctype="multipart/form-data">
+    <label>Ảnh V1 (phiên bản cũ):</label>
+    <input type="file" name="v1" accept="image/*" required><br><br>
+
+    <label>Ảnh V2 (phiên bản mới):</label>
+    <input type="file" name="v2" accept="image/*" required><br><br>
+
+    <button type="submit">So sánh</button>
+</form>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Kết quả UI Diff</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style> pre { white-space: pre-wrap; } </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+<header class="bg-white shadow">
+    <div class="max-w-6xl mx-auto px-6 py-4">
+        <h1 class="text-2xl font-bold">Kết quả phát hiện thay đổi UI</h1>
+        <p class="text-sm text-gray-500">Session ID: <span th:text="${r.id}">id</span></p>
+    </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-6 py-8 space-y-10">
+
+    <section class="bg-white rounded-xl shadow p-6">
+        <h2 class="text-xl font-semibold mb-4">Screenshots & Diff</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+                <h3 class="font-semibold mb-2">V1 (baseline)</h3>
+                <img th:src="@{${r.v1Shot}}" alt="V1" class="border rounded">
+                <p class="text-xs text-gray-500 mt-1">
+                    <a class="underline" th:href="@{${r.v1Shot}}" target="_blank">Mở ảnh</a>
+                </p>
+            </div>
+            <div>
+                <h3 class="font-semibold mb-2">V2 (candidate)</h3>
+                <img th:src="@{${r.v2Shot}}" alt="V2" class="border rounded">
+                <p class="text-xs text-gray-500 mt-1">
+                    <a class="underline" th:href="@{${r.v2Shot}}" target="_blank">Mở ảnh</a>
+                </p>
+            </div>
+            <div>
+                <h3 class="font-semibold mb-2">Diff (vẽ khung đỏ vùng thay đổi)</h3>
+                <img th:src="@{${r.imgDiff}}" alt="Diff" class="border rounded">
+                <p class="text-xs text-gray-500 mt-1">
+                    <a class="underline" th:href="@{${r.imgDiff}}" target="_blank">Mở ảnh</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-white rounded-xl shadow p-6">
+        <h2 class="text-xl font-semibold mb-4">DOM khác biệt</h2>
+
+        <!-- Có DOM diff (chế độ URL) -->
+        <div th:if="${hasDom}">
+        <pre th:text="${#strings.listJoin(
+              T(java.nio.file.Files).readAllLines(
+                T(java.nio.file.Paths).get('run-results/' + ${r.id} + '/domdiff.txt')
+              )
+            , '\n')}">Diff DOM</pre>
+        </div>
+
+        <!-- Không có DOM diff (chế độ upload ảnh) -->
+        <div th:if="${!hasDom}">
+            <pre>Chế độ upload ảnh: không có DOM diff.</pre>
+        </div>
+    </section>
+
+    <div>
+        <a href="/" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+            So sánh lại
+        </a>
+    </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>UI Diff Java – So sánh giao diện</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <style>
+        .hint{font-size:.8rem;color:#6b7280}
+        .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+        .card{background:#fff;border-radius:0.75rem;box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05)}
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+<header class="bg-white border-b">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        <h1 class="text-2xl font-bold">Phát hiện thay đổi UI (Java + Selenium + OpenCV)</h1>
+        <a class="text-sm underline" href="/health">/health</a>
+    </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-6 py-8 space-y-10">
+
+    <!-- Thông báo lỗi (nếu có) -->
+    <div th:if="${error}" class="card border border-red-200 p-4">
+        <div class="text-red-700 font-semibold">Có lỗi xảy ra</div>
+        <div class="text-red-600 mt-1" th:text="${error}">Chi tiết lỗi</div>
+    </div>
+
+    <!-- I. So sánh theo URL -->
+    <section class="card p-6">
+        <h2 class="text-xl font-semibold mb-4">1) So sánh UI theo URL (khuyến nghị cho kiểm thử hồi quy)</h2>
+
+        <form method="post" action="/compare-urls" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- V1 -->
+            <div class="col-span-1">
+                <label class="block text-sm font-medium mb-1">URL V1 (baseline)</label>
+                <input name="urlV1" class="w-full border rounded p-2"
+                       placeholder="http://localhost:8020" required />
+                <p class="hint mt-1">Ví dụ: <span class="mono">http://localhost:8020</span> (nopCommerce v4.50)</p>
+            </div>
+
+            <!-- V2 -->
+            <div class="col-span-1">
+                <label class="block text-sm font-medium mb-1">URL V2 (candidate)</label>
+                <input name="urlV2" class="w-full border rounded p-2"
+                       placeholder="http://localhost:8021" required />
+                <p class="hint mt-1">Ví dụ: <span class="mono">http://localhost:8021</span> (nopCommerce v4.60)</p>
+            </div>
+
+            <!-- Tuỳ chọn nâng cao (nếu cần, bạn có thể bind vào application.yml & service) -->
+            <div class="col-span-full grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Viewport width</label>
+                    <input type="number" name="vw" class="w-full border rounded p-2" placeholder="1280" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Viewport height</label>
+                    <input type="number" name="vh" class="w-full border rounded p-2" placeholder="800" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Wait (ms) trước khi chụp</label>
+                    <input type="number" name="wait" class="w-full border rounded p-2" placeholder="0" />
+                </div>
+            </div>
+
+            <div class="col-span-full">
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded">
+                    So sánh theo URL
+                </button>
+            </div>
+        </form>
+
+        <ul class="hint mt-4 list-disc ml-5 space-y-1">
+            <li>Hệ thống sẽ mở 2 URL bằng Chrome headless → chụp ảnh → so ảnh & vẽ khung đỏ vùng thay đổi → diff DOM.</li>
+            <li>Kết quả lưu ở thư mục <span class="mono">run-results/&lt;id&gt;/</span> và truy cập qua <span class="mono">/results/**</span>.</li>
+        </ul>
+    </section>
+
+    <!-- II. So sánh theo Upload -->
+    <section class="card p-6">
+        <h2 class="text-xl font-semibold mb-4">2) So sánh UI theo Upload ảnh (nhanh khi đã có screenshot)</h2>
+
+        <form method="post" action="/compare-upload" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium mb-1">Ảnh V1 (baseline)</label>
+                <input type="file" name="v1" accept="image/*" required class="w-full border rounded p-2 bg-gray-50" />
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Ảnh V2 (candidate)</label>
+                <input type="file" name="v2" accept="image/*" required class="w-full border rounded p-2 bg-gray-50" />
+            </div>
+            <div class="col-span-full">
+                <button class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded">
+                    So sánh theo Upload
+                </button>
+            </div>
+        </form>
+
+        <p class="hint mt-4">Chế độ upload chỉ so sánh ảnh (không có DOM diff).</p>
+    </section>
+
+    <!-- Hướng dẫn nhanh -->
+    <section class="card p-6">
+        <h3 class="text-lg font-semibold mb-3">Gợi ý sử dụng nhanh</h3>
+        <ol class="list-decimal ml-6 space-y-2 hint">
+            <li>Đảm bảo 2 site chạy: V1 tại <span class="mono">http://localhost:8020</span>, V2 tại <span class="mono">http://localhost:8021</span>.</li>
+            <li>Nhập hai URL rồi bấm <strong>So sánh theo URL</strong>.</li>
+            <li>Xem ảnh V1/V2/Diff và bản diff DOM ở trang kết quả.</li>
+        </ol>
+    </section>
+
+</main>
+
+<footer class="text-center text-xs text-gray-500 py-6">
+    © 2025 UI Diff Java · Lưu kết quả tại <span class="mono">run-results</span>
+</footer>
+</body>
+</html>
