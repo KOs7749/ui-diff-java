@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Kết quả Diff (List&lt;String&gt;)</title>
+    <style>
+        body{font-family:Arial;margin:20px}
+        .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+        img{max-width:100%;border:1px solid #e5e7eb;border-radius:6px}
+        .card{border:1px solid #e5e7eb;border-radius:8px;padding:10px;background:#fff}
+    </style>
+</head>
+<body>
+<h2>Kết quả Diff (List&lt;String&gt;)</h2>
+<div class="grid">
+    <div class="card" th:each="path : ${results}">
+        <div th:text="${path}" style="font-size:12px;color:#6b7280;margin-bottom:6px"></div>
+        <img th:src="@{${path}}" alt="diff"/>
+    </div>
+</div>
+</body>
+</html>

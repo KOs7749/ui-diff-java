@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Kết quả Diff (Object)</title>
+    <style>
+        body{font-family:Arial;margin:20px}
+        .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+        img{max-width:100%;border:1px solid #e5e7eb;border-radius:6px}
+        .card{border:1px solid #e5e7eb;border-radius:8px;padding:10px;background:#fff}
+        .meta{font-size:12px;color:#6b7280;margin-bottom:6px}
+    </style>
+</head>
+<body>
+<h2>Kết quả Diff (List&lt;DiffResult&gt;)</h2>
+
+<div class="card" style="margin-bottom:12px">
+    <strong>Lưu ý:</strong> Nếu bạn có cả ảnh V1/V2, template này sẽ hiển thị đủ 3 cột. Nếu chỉ có ảnh diff thì chỉ cần dùng trường <code>imagePath</code>.
+</div>
+
+<div th:each="r : ${results}">
+    <h3>ID: <span th:text="${r.id}"></span></h3>
+    <div class="grid">
+        <div class="card" th:if="${r.v1Path != null}">
+            <div class="meta" th:text="${r.v1Path}"></div>
+            <img th:src="@{${r.v1Path}}" alt="v1"/>
+        </div>
+
+        <div class="card" th:if="${r.v2Path != null}">
+            <div class="meta" th:text="${r.v2Path}"></div>
+            <img th:src="@{${r.v2Path}}" alt="v2"/>
+        </div>
+
+        <div class="card">
+            <div class="meta" th:text="${r.imagePath}"></div>
+            <img th:src="@{${r.imagePath}}" alt="diff"/>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+</body>
+</html>

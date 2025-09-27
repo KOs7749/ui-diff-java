@@ -2,7 +2,12 @@ server:
   port: 8088
 
 app:
-  out-dir: ./run-results        # nơi sinh ảnh/log
+  out-dir: ./run-results
   viewport:
-    width: 1280
-    height: 800
+    width: 1366
+    height: 900
+  crawl:
+    maxPages: 200
+    sameDomainOnly: true
+    timeoutMs: 15000
+    userAgent: "UiDiffBot/1.0"

@@ -13,6 +13,8 @@
     <groupId>com.example</groupId>
     <artifactId>ui-diff-java</artifactId>
     <version>1.0.0</version>
+    <name>UI Diff Java</name>
+    <description>Website-wide UI regression diff (crawl + screenshot + image diff + DOM diff)</description>
 
     <properties>
         <java.version>17</java.version>
@@ -23,6 +25,7 @@
     </properties>
 
     <dependencies>
+        <!-- Web + Thymeleaf (nếu dùng trang HTML giao diện) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -32,7 +35,7 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
-        <!-- Selenium + tự tải chromedriver -->
+        <!-- Selenium + auto chromedriver -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
@@ -44,29 +47,39 @@
             <version>5.9.2</version>
         </dependency>
 
-        <!-- DOM parse + diff -->
+        <!-- Crawl + DOM -->
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>${jsoup.version}</version>
         </dependency>
+
+        <!-- Text diff cho DOM -->
         <dependency>
             <groupId>io.github.java-diff-utils</groupId>
             <artifactId>java-diff-utils</artifactId>
             <version>${diffutils.version}</version>
         </dependency>
 
-        <!-- OpenCV (with native) -->
+        <!-- OpenCV (native bundles) -->
         <dependency>
             <groupId>org.bytedeco</groupId>
             <artifactId>opencv-platform</artifactId>
             <version>4.9.0-${bytedeco.version}</version>
         </dependency>
 
+        <!-- Lombok (tuỳ chọn) -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <!-- Test (tuỳ chọn) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -79,7 +92,9 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
-                <configuration><release>${java.version}</release></configuration>
+                <configuration>
+                    <release>${java.version}</release>
+                </configuration>
             </plugin>
         </plugins>
     </build>
